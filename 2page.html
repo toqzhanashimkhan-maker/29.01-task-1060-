@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+        :root {
+            --pink: #ffdeeb;
+            --yellow: #fef9c3;
+            --text: #5e4d52;
+            --accent: #ff85a1;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            font-family: 'Segoe UI', sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        nav {
+            margin-bottom: 20px;
+            background: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        nav a { text-decoration: none; color: var(--text); font-weight: bold; margin: 0 15px; }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            width: 450px;
+        }
+
+        h2 { color: var(--accent); text-align: center; }
+
+        .form-group { margin-bottom: 15px; }
+        
+        label { font-size: 14px; font-weight: bold; display: block; margin-bottom: 5px; }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--pink);
+            border-radius: 10px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Список курсов */
+        #course-list { margin-top: 25px; padding: 0; }
+        
+        .course-item {
+            background: #fff9f9;
+            border: 1px solid var(--pink);
+            border-left: 6px solid var(--accent);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .course-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .course-name { font-weight: bold; font-size: 18px; color: #d63384; }
+        .course-meta { font-size: 13px; color: #888; margin-top: 5px; }
+        .priority-tag { font-size: 11px; padding: 2px 8px; border-radius: 5px; background: var(--yellow); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="1page.html">Профиль</a>
+        <a href="2page.html">Курсы</a>
+        <a href="3page.html">Статистика</a>
+    </nav>
+
+    <div class="container">
+        <h2>Добавить новый курс</h2>
+        <form id="full-course-form">
+            <div class="form-group">
+                <label>Название курса</label>
+                <input type="text" id="c-name" placeholder="Напр: JavaScript Master" required>
+            </div>
+
+            <div class="form-group">
+                <label>Направление</label>
+                <select id="c-category">
+                    <option value="Программирование">💻 Программирование</option>
+                    <option value="Дизайн">🎨 Дизайн</option>
+                    <option value="Маркетинг">📈 Маркетинг</option>
+                    <option value="Языки">🗣 Языки</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Дата начала</label>
+                <input type="date" id="c-date">
+            </div>
+
+            <div class="form-group">
+                <label><input type="checkbox" id="c-urgent"> Важный (высокий приоритет)</label>
+            </div>
+
+            <button type="submit">Добавить в учебный план</button>
+        </form>
+
+        <ul id="course-list">
+            </ul>
+    </div>
+
+    <script>
+       
+        const form = document.querySelector('#full-course-form');
+        const list = document.querySelector('#course-list');
+
+        
+        form.addEventListener('submit', (event) => {
+            
+            event.preventDefault();
+
+            
+            const name = document.querySelector('#c-name').value;
+            const cat = document.querySelector('#c-category').value;
+            const date = document.querySelector('#c-date').value || "Не указана";
+            const isUrgent = document.querySelector('#c-urgent').checked;
+
+            
+            const li = document.createElement('li');
+            li.className = 'course-item';
+
+            
+            li.innerHTML = `
+                <div class="course-header">
+                    <span class="course-name">${name}</span>
+                    ${isUrgent ? '<span class="priority-tag">🔥 Важно</span>' : ''}
+                </div>
+                <div class="course-meta">
+                    <span>📁 ${cat}</span> | <span>📅 Старт: ${date}</span>
+                </div>
+            `;
+
+            
+            list.appendChild(li);
+
+            
+            form.reset();
+        });
+    </script>
+</body>
+</html>
+

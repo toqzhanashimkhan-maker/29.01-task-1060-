@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+        :root {
+            --pink: #ffdeeb;
+            --yellow: #fef9c3;
+            --text: #5e4d52;
+            --accent: #ff85a1;
+            --success: #a7f3d0;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--pink), var(--yellow));
+            font-family: 'Segoe UI', sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        nav {
+            margin-bottom: 20px;
+            background: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        nav a { text-decoration: none; color: var(--text); font-weight: bold; margin: 0 15px; }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 320px;
+        }
+
+        h2 { color: var(--accent); margin-top: 0; text-align: center; }
+
+        .form-group { margin-bottom: 15px; }
+        label { font-size: 14px; font-weight: bold; display: block; margin-bottom: 5px; }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--pink);
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        /* Визуализация прогресса */
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: #fff9f9;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+
+        .progress-container {
+            background: #eee;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            background: var(--accent);
+            width: 0%;
+            height: 100%;
+            transition: 0.5s ease;
+        }
+
+        .big-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent);
+            display: block;
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="1page.html">Профиль</a>
+        <a href="2page.html">Курсы</a>
+        <a href="3page.html">Статистика</a>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2>Ввод данных</h2>
+            <form id="stats-form">
+                <div class="form-group">
+                    <label>Средний балл (GPA) от 0 до 5</label>
+                    <input type="number" id="s-gpa" step="0.1" min="0" max="5" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Выполнено тестов</label>
+                    <input type="number" id="s-tests" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Уровень мотивации (%)</label>
+                    <input type="number" id="s-energy" min="0" max="100" value="50">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="s-debt"> Есть задолженности по учебе
+                    </label>
+                </div>
+                <button type="submit">Рассчитать итоги</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Ваш результат</h2>
+            
+            <div class="stat-box">
+                <span class="info-label">Ваш текущий GPA:</span>
+                <span id="out-gpa" class="big-number">0.0</span>
+            </div>
+
+            <div class="stat-box">
+                <label>Энергия и Мотивация:</label>
+                <div class="progress-container">
+                    <div id="bar-energy" class="progress-bar"></div>
+                </div>
+                <small id="text-energy">Загрузка: 50%</small>
+            </div>
+
+            <div class="stat-box">
+                <p>Тестов пройдено: <strong id="out-tests">0</strong></p>
+                <div id="out-debt" style="padding: 10px; border-radius: 10px; font-weight: bold;">
+                    Долгов нет ✨
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        const form = document.querySelector('#stats-form');
+        
+        
+        const inGpa = document.querySelector('#s-gpa');
+        const inTests = document.querySelector('#s-tests');
+        const inEnergy = document.querySelector('#s-energy');
+        const inDebt = document.querySelector('#s-debt');
+
+       
+        const outGpa = document.querySelector('#out-gpa');
+        const outTests = document.querySelector('#out-tests');
+        const barEnergy = document.querySelector('#bar-energy');
+        const textEnergy = document.querySelector('#text-energy');
+        const outDebt = document.querySelector('#out-debt');
+
+        
+        function updateDashboard() {
+           
+            const gpaValue = parseFloat(inGpa.value).toFixed(1);
+            outGpa.textContent = gpaValue;
+            outTests.textContent = inTests.value;
+            
+            const energyValue = inEnergy.value;
+            barEnergy.style.width = energyValue + '%';
+            textEnergy.textContent = `Заряд: ${energyValue}%`;
+
+            if (inDebt.checked) {
+                outDebt.textContent = "⚠️ Нужно сдать хвосты!";
+                outDebt.style.background = "#fee2e2";
+                outDebt.style.color = "#991b1b";
+            } else {
+                outDebt.textContent = "Чисто! Долгов нет ✨";
+                outDebt.style.background = "#d1fae5";
+                outDebt.style.color = "#065f46";
+            }
+        }
+
+       
+        form.addEventListener('submit', (e) => {
+            e.preventDefault(); 
+            updateDashboard();
+            alert("Статистика успешно проанализирована!");
+        });
+
+        
+        inGpa.addEventListener('input', updateDashboard);
+        inTests.addEventListener('input', updateDashboard);
+        inEnergy.addEventListener('input', updateDashboard);
+        inDebt.addEventListener('change', updateDashboard);
+
+        
+        updateDashboard();
+    </script>
+</body>
+</html>

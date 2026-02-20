@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль Студента</title>
+    <style>
+        :root {
+            --pink: #ffdeeb;
+            --yellow: #fef9c3;
+            --text: #5e4d52;
+            --accent: #ff85a1;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--pink), var(--yellow));
+            font-family: 'Segoe UI', sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        nav {
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: bold;
+            margin: 0 15px;
+        }
+
+        .main-wrapper {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            width: 320px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Стиль из задания с фото */
+        .highlight {
+            background-color: #fef08a !important; /* Светло-желтый */
+            border: 2px solid #facc15;
+        }
+
+        h2 { margin-top: 0; font-size: 1.2rem; color: var(--accent); }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 2px solid var(--pink);
+            border-radius: 10px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 12px;
+        }
+
+        /* Кнопка подсветки */
+        #btn-highlight {
+            background: #64748b;
+            margin-top: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            border-bottom: 1px solid #fff0f5;
+            padding-bottom: 5px;
+        }
+
+        .info-label { font-weight: bold; color: var(--accent); }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .active-bg { background: #d1fae5; color: #065f46; }
+        .inactive-bg { background: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="1page.html">Профиль</a>
+        <a href="2page.html">Курсы</a>
+        <a href="3page.html">Статистика</a>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="card">
+            <h2>Редактировать данные</h2>
+            <form id="student-form">
+                <input type="text" id="name" placeholder="Имя">
+                <input type="text" id="surname" placeholder="Фамилия">
+                <input type="number" id="age" placeholder="Возраст">
+                <input type="text" id="address" placeholder="Адрес">
+                
+                <label style="font-size: 14px;">
+                    <input type="checkbox" id="status-check"> Студент обучается сейчас
+                </label>
+                
+                <button type="submit">Обновить карточку</button>
+            </form>
+        </div>
+
+        <div class="card" id="profile-card">
+            <div style="font-size: 50px; text-align: center;">🌸</div>
+            <h2 style="text-align: center; margin-bottom: 20px;">Карточка Студента</h2>
+            
+            <div class="info-row">
+                <span class="info-label">Имя:</span>
+                <span id="out-name">---</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Фамилия:</span>
+                <span id="out-surname">---</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Возраст:</span>
+                <span id="out-age">---</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Адрес:</span>
+                <span id="out-address">---</span>
+            </div>
+            
+            <div style="text-align: center;">
+                <span id="out-status" class="status-badge inactive-bg">Не определен</span>
+            </div>
+
+            <button id="btn-highlight">Подсветить карточку</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.querySelector('#student-form');
+        const inName = document.querySelector('#name');
+        const inSurname = document.querySelector('#surname');
+        const inAge = document.querySelector('#age');
+        const inAddress = document.querySelector('#address');
+        const inStatus = document.querySelector('#status-check');
+
+        const outName = document.querySelector('#out-name');
+        const outSurname = document.querySelector('#out-surname');
+        const outAge = document.querySelector('#out-age');
+        const outAddress = document.querySelector('#out-address');
+        const outStatus = document.querySelector('#out-status');
+
+        
+        const profileCard = document.querySelector("#profile-card");
+        const highlightBtn = document.querySelector("#btn-highlight");
+
+        
+        highlightBtn.addEventListener("click", () => {
+            profileCard.classList.toggle("highlight");
+        });
+
+        function refreshCard() {
+            outName.textContent = inName.value || "---";
+            outSurname.textContent = inSurname.value || "---";
+            outAge.textContent = inAge.value || "0";
+            outAddress.textContent = inAddress.value || "Не указан";
+            
+            if (inStatus.checked) {
+                outStatus.textContent = "Действующий студент";
+                outStatus.className = "status-badge active-bg";
+            } else {
+                outStatus.textContent = "В академическом отпуске";
+                outStatus.className = "status-badge inactive-bg";
+            }
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            refreshCard();
+            alert("Данные профиля обновлены!");
+        });
+
+        inName.addEventListener('input', refreshCard);
+        inSurname.addEventListener('input', refreshCard);
+        inAge.addEventListener('input', refreshCard);
+        inAddress.addEventListener('input', refreshCard);
+        inStatus.addEventListener('change', refreshCard);
+    </script>
+</body>
+</html>
